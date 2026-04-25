@@ -61,32 +61,26 @@ export default function LevelSelectScreen({ state, onSelect, onBack }) {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8 }}>
               {levels.map(lv => {
                 const stars = levelStars[String(lv)] || 0;
-                const locked = lv > currentLevel;
                 const perfect = stars === 3;
                 return (
                   <button
                     key={lv}
-                    onClick={() => !locked && onSelect(lv)}
-                    disabled={locked}
+                    onClick={() => onSelect(lv)}
                     style={{
                       borderRadius: 14,
                       padding: '10px 4px',
-                      border: locked
-                        ? '1px solid rgba(255,255,255,0.04)'
-                        : perfect
+                      border: perfect
                         ? `2px solid ${wt.accent}66`
                         : stars > 0
                         ? `1px solid ${wt.accent}33`
                         : '1px solid rgba(255,255,255,0.08)',
-                      background: locked
-                        ? 'rgba(255,255,255,0.015)'
-                        : perfect
+                      background: perfect
                         ? `${wt.accent}10`
                         : stars > 0
                         ? 'rgba(255,255,255,0.03)'
                         : 'rgba(255,255,255,0.02)',
-                      opacity: locked ? 0.3 : 1,
-                      cursor: locked ? 'not-allowed' : 'pointer',
+                      opacity: 1,
+                      cursor: 'pointer',
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
@@ -96,9 +90,9 @@ export default function LevelSelectScreen({ state, onSelect, onBack }) {
                   >
                     <span style={{
                       fontSize: 13, fontWeight: 900,
-                      color: locked ? '#334155' : perfect ? wt.accent : '#94a3b8',
+                      color: perfect ? wt.accent : '#94a3b8',
                     }}>
-                      {locked ? '🔒' : `${lv}`}
+                      {lv}
                     </span>
                     <span style={{ fontSize: 10, color: '#475569', fontWeight: 700 }}>
                       {getLevelConfig(lv).count}こ
