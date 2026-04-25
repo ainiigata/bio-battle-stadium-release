@@ -53,6 +53,7 @@ export default function BattleMapScreen({ state, onBack, onSelectNation }) {
         {NATIONS.map((nation, idx) => {
           const isConquered = conquered.includes(nation.id);
           const isNext = idx === nextIndex;
+          const isLocked = idx > nextIndex;
 
           return (
             <div key={nation.id}>
@@ -61,22 +62,23 @@ export default function BattleMapScreen({ state, onBack, onSelectNation }) {
                 <div className="flex justify-center py-1">
                   <div style={{
                     width: 2, height: 20,
-                    background: 'rgba(255,255,255,0.12)',
+                    background: idx <= nextIndex ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.04)',
                   }} />
                 </div>
               )}
 
               <button
-                onClick={() => onSelectNation(nation)}
+                onClick={() => !isLocked && onSelectNation(nation)}
+                disabled={isLocked}
                 className="w-full rounded-2xl overflow-hidden text-left transition-all active:scale-[0.98]"
                 style={{
-                  background: 'rgba(255,255,255,0.03)',
+                  background: isLocked ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.03)',
                   border: isNext
                     ? `2px solid ${nation.color}88`
                     : isConquered
                     ? '2px solid rgba(34,197,94,0.25)'
                     : '1px solid rgba(255,255,255,0.04)',
-                  opacity: 1,
+                  opacity: isLocked ? 0.35 : 1,
                   '--pulse-color': `${nation.color}30`,
                   animation: isNext ? 'nextPulse 2.5s ease-in-out infinite' : 'none',
                 }}
@@ -89,11 +91,11 @@ export default function BattleMapScreen({ state, onBack, onSelectNation }) {
                         className="w-13 h-13 rounded-xl flex items-center justify-center text-2xl"
                         style={{
                           width: 52, height: 52,
-                          background: nation.bgGrad,
-                          border: `1px solid ${nation.color + '33'}`,
+                          background: isLocked ? 'rgba(255,255,255,0.03)' : nation.bgGrad,
+                          border: `1px solid ${isLocked ? 'rgba(255,255,255,0.06)' : nation.color + '33'}`,
                         }}
                       >
-                        {nation.emoji}
+                        {isLocked ? '🔒' : nation.emoji}
                       </div>
                       {isConquered && (
                         <div
@@ -135,6 +137,8 @@ export default function BattleMapScreen({ state, onBack, onSelectNation }) {
                         >
                           <div style={{ fontSize: 11, fontWeight: 800, color: '#4ade80' }}>制覇済み</div>
                         </div>
+                      ) : isLocked ? (
+                        <div style={{ fontSize: 10, color: '#334155' }}>LOCKED</div>
                       ) : (
                         <div
                           className="px-3 py-1.5 rounded-lg"
@@ -148,7 +152,7 @@ export default function BattleMapScreen({ state, onBack, onSelectNation }) {
                   </div>
 
                   {/* Enemy preview */}
-                  {(
+                  {!isLocked && (
                     <div className="mt-3 flex items-center gap-1.5">
                       <span style={{ fontSize: 10, color: '#475569', marginRight: 2 }}>敵</span>
                       {nation.team.map((card, ci) => (
